@@ -3,22 +3,29 @@ from .models import Product
 from category.models import Category
 from cart.models import CartItem
 from cart.views import _cart_id
-
+from django.core.paginator import Paginator
+from django.db.models import Q
 def store(request, category_slug = None):
     categories = None
-    allAvailableProducts = None
+    all_available_products = None
 
     if category_slug != None:
         categories = get_object_or_404(Category, slug = category_slug)
-        allAvailableProducts = Product.objects.filter(category = categories, is_available = True)
-        productCount = allAvailableProducts.count()
+        all_available_products = Product.objects.filter(category = categories, is_available = True).order_by('id')
+        paginator = Paginator(all_available_products, 6)
+        page = request.GET.get('page')
+        paged_products = paginator.get_page(page)
+        product_count = all_available_products.count()
     else:
-        allAvailableProducts = Product.objects.all().filter(is_available = True)
-        productCount = allAvailableProducts.count()
+        all_available_products = Product.objects.all().filter(is_available = True).order_by('id')
+        paginator = Paginator(all_available_products, 6)
+        page = request.GET.get('page')
+        paged_products = paginator.get_page(page)
+        product_count = all_available_products.count()
 
     context = {
-        'allAvailableProducts' : allAvailableProducts, 
-        'productCount': productCount, 
+        'paged_products' : paged_products, 
+        'product_count': product_count, 
     }
 
     return render(request, 'store/store.html', context)
@@ -36,3 +43,19 @@ def product_detail(request, category_slug = None, product_slug = None):
         'in_cart' : in_cart,
     }
     return render(request, 'store/product_detail.html', context)
+
+def search(request):
+    if "keyword" in request.GET:
+        keyword = request.GET['keyword']
+        if keyword:
+            paged_products = Product.objects.order_by('-created_date').filter(Q(product_name__icontains = keyword) | Q(description__icontains = keyword)).filter(is_available = True)
+            product_count = paged_products.count()
+
+    context = {
+        'paged_products' : paged_products,
+        'product_count' : product_count,
+    }
+
+    return render(request, 'store/store.html', context)
+
+    
