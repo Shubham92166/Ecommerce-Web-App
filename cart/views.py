@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 def _cart_id(request):
     cart = request.session.session_key
     if not cart:
-        cart = request.session.creat()
+        cart = request.session.create()
     return cart
 
 def add_cart(request, product_id):
@@ -59,6 +59,8 @@ def remove_cart_item(request, product_id):
     return redirect('cart')
 
 def cart(request, total = 0, quantity = 0, cart_items = None):
+    tax_amount = 0
+    grand_total = 0
     try:
         cart = Cart.objects.get(cart_id = _cart_id(request))
         cart_items = CartItem.objects.filter(cart = cart, is_active = True)
