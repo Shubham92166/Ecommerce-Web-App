@@ -7,21 +7,21 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 def store(request, category_slug = None):
     categories = None
-    allAvailableProducts = None
+    all_available_products = None
 
     if category_slug != None:
         categories = get_object_or_404(Category, slug = category_slug)
-        allAvailableProducts = Product.objects.filter(category = categories, is_available = True)
-        paginator = Paginator(allAvailableProducts, 6)
+        all_available_products = Product.objects.filter(category = categories, is_available = True).order_by('id')
+        paginator = Paginator(all_available_products, 6)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
-        product_count = allAvailableProducts.count()
+        product_count = all_available_products.count()
     else:
-        allAvailableProducts = Product.objects.all().filter(is_available = True).order_by(id)
-        paginator = Paginator(allAvailableProducts, 6)
+        all_available_products = Product.objects.all().filter(is_available = True).order_by('id')
+        paginator = Paginator(all_available_products, 6)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
-        product_count = allAvailableProducts.count()
+        product_count = all_available_products.count()
 
     context = {
         'paged_products' : paged_products, 
