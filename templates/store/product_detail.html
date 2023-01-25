@@ -35,7 +35,7 @@
 										<select name="colour" class="form-control" required>
 											<option value="" disabled selected>colour</option>
 											{% for colour in single_product.variation_set.colours %}
-												<option value="{{ colour.variation_value | lower }}">{{ colour.variation_value | capfirst }}</option>
+												<option value="{{ colour.variation_value | lower }}"> {{ colour.variation_value | capfirst }} </option>
 											{% endfor %}
 										</select>
 									</div>
