@@ -9,6 +9,10 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+#import "C:/Users/Dell/Desktop/Ecommerce/credentials.json"
+import sys
+sys.path.insert(1, "C:/Users/Dell/Desktop/Ecommerce")
+from credentials import credentials
 
 from pathlib import Path
 
@@ -20,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$@a%z!l38-a!^ml+r4(@*u%&y*d29l5ixe)mhwe4=bed@%1y4j'
+SECRET_KEY = credentials.get('secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -83,12 +87,12 @@ AUTH_USER_MODEL = 'account.Account'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ecommerce',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'USER': 'root',
-        'PASSWORD': 'root',
+        'ENGINE': credentials.get('db_engine'),
+        'NAME': credentials.get('db_name'),
+        'HOST': credentials.get("db_host"),
+        'PORT': credentials.get("db_port"),
+        'USER': credentials.get('db_user'),
+        'PASSWORD': credentials.get('db_password'),
     }
 }
 
@@ -149,3 +153,11 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+
+#smtp configuration
+EMAIL_HOST = credentials.get('email_host')
+EMAIL_PORT = credentials.get('email_port')
+EMAIL_HOST_USER = credentials.get('email')
+EMAIL_HOST_PASSWORD = credentials.get('email_password')
+EMAIL_USE_TLS = True 
