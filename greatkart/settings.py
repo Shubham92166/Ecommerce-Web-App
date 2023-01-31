@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-#import "C:/Users/Dell/Desktop/Ecommerce/credentials.json"
+
 import sys
 sys.path.insert(1, "C:/Users/Dell/Desktop/Ecommerce")
 from credentials import credentials
