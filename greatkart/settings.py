@@ -29,7 +29,7 @@ SECRET_KEY = credentials.get('secret_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['greatcart-project-env.eba-tmm7iagw.us-west-2.elasticbeanstalk.com',]
 
 
 # Application definition
