@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 import sys
+import os
+
 sys.path.insert(1, "C:/Users/Dell/Desktop/Ecommerce")
 from credentials import credentials
 
@@ -85,16 +87,27 @@ AUTH_USER_MODEL = 'account.Account'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': credentials.get('db_engine'),
-        'NAME': credentials.get('db_name'),
-        'HOST': credentials.get("db_host"),
-        'PORT': credentials.get("db_port"),
-        'USER': credentials.get('db_user'),
-        'PASSWORD': credentials.get('db_password'),
+if 'RDS_DB_NAME' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ['RDS_DB_NAME'],
+            'USER': os.environ['RDS_USERNAME'],
+            'PASSWORD': os.environ['RDS_PASSWORD'],
+            'HOST': os.environ['RDS_HOSTNAME'],
+            'PORT': os.environ['RDS_PORT'],
+        }
     }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': credentials.get('db_engine'),
+            'NAME': credentials.get('db_name'),
+            'HOST': credentials.get("db_host"),
+            'PORT': credentials.get("db_port"),
+            'USER': credentials.get('db_user'),
+            'PASSWORD': credentials.get('db_password'),
+        }
 }
 
 
