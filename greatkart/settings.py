@@ -15,6 +15,7 @@ import os
 
 sys.path.insert(1, "C:/Users/Dell/Desktop/Ecommerce")
 from decouple import config
+from credentials import credentials
 
 from pathlib import Path
 
@@ -102,12 +103,8 @@ if 'RDS_DB_NAME' in os.environ:
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'ecommerce',
-            'HOST': '127.0.0.1',
-            'PORT': '3306',
-            'USER': 'root',
-            'PASSWORD': 'root',
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
