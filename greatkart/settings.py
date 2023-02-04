@@ -14,7 +14,7 @@ import sys
 import os
 
 sys.path.insert(1, "C:/Users/Dell/Desktop/Ecommerce")
-from credentials import credentials
+from decouple import config
 
 from pathlib import Path
 
@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = credentials.get('secret_key')
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -161,8 +161,8 @@ MESSAGE_TAGS = {
 
 
 #smtp configuration
-EMAIL_HOST = credentials.get('email_host')
-EMAIL_PORT = credentials.get('email_port')
-EMAIL_HOST_USER = credentials.get('email')
-EMAIL_HOST_PASSWORD = credentials.get('email_password')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True 
