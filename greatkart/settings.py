@@ -100,17 +100,6 @@ if 'RDS_DB_NAME' in os.environ:
         }
     }
 
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': credentials.get('db_engine'),
-            'NAME': credentials.get('db_name'),
-            'HOST': credentials.get("db_host"),
-            'PORT': credentials.get("db_port"),
-            'USER': credentials.get('db_user'),
-            'PASSWORD': credentials.get('db_password'),
-        }
-    }
 
 
 # Password validation
