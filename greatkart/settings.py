@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 import sys
+import os
+
 sys.path.insert(1, "C:/Users/Dell/Desktop/Ecommerce")
-from credentials import credentials
+from decouple import config
 
 from pathlib import Path
 
@@ -24,12 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = credentials.get('secret_key')
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['greatkart-project-2-env.eba-y2pcjkt2.us-west-2.elasticbeanstalk.com', '127.0.0.1', 'project-django-6-env.eba-rkjttuqv.us-west-2.elasticbeanstalk.com']
 
 
 # Application definition
@@ -86,16 +88,29 @@ AUTH_USER_MODEL = 'account.Account'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': credentials.get('db_engine'),
-        'NAME': credentials.get('db_name'),
-        'HOST': credentials.get("db_host"),
-        'PORT': credentials.get("db_port"),
-        'USER': credentials.get('db_user'),
-        'PASSWORD': credentials.get('db_password'),
+if 'RDS_DB_NAME' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ['RDS_DB_NAME'],
+            'USER': os.environ['RDS_USERNAME'],
+            'PASSWORD': os.environ['RDS_PASSWORD'],
+            'HOST': os.environ['RDS_HOSTNAME'],
+            'PORT': os.environ['RDS_PORT'],
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'ecommerce',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
+            'USER': 'root',
+            'PASSWORD': 'root',
+        }
+    }
+
 
 
 # Password validation
@@ -157,8 +172,8 @@ MESSAGE_TAGS = {
 
 
 #smtp configuration
-EMAIL_HOST = credentials.get('email_host')
-EMAIL_PORT = credentials.get('email_port')
-EMAIL_HOST_USER = credentials.get('email')
-EMAIL_HOST_PASSWORD = credentials.get('email_password')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True 
