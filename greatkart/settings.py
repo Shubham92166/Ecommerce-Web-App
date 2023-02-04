@@ -31,7 +31,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['greatkart-project-2-env.eba-y2pcjkt2.us-west-2.elasticbeanstalk.com', '127.0.0.1']
+ALLOWED_HOSTS = ['greatkart-project-2-env.eba-y2pcjkt2.us-west-2.elasticbeanstalk.com', '127.0.0.1', 'project-django-6-env.eba-rkjttuqv.us-west-2.elasticbeanstalk.com']
 
 
 # Application definition
