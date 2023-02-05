@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import sys
 import os
+from credentials import credentials
 
 sys.path.insert(1, "C:/Users/Dell/Desktop/Ecommerce")
 from decouple import config
-from credentials import credentials
 
 from pathlib import Path
 
@@ -27,7 +27,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+try:
+    SECRET_KEY = config('SECRET_KEY')
+except:
+    SECRET_KEY = credentials.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -102,11 +105,15 @@ if 'RDS_DB_NAME' in os.environ:
     }
 else:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ecommerce',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'USER': 'root',
+        'PASSWORD': 'root',
     }
+}
 
 
 
@@ -169,8 +176,14 @@ MESSAGE_TAGS = {
 
 
 #smtp configuration
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_PORT = config('EMAIL_PORT')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+try:
+    EMAIL_HOST = config('EMAIL_HOST')
+    EMAIL_PORT = config('EMAIL_PORT')
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+except:
+    EMAIL_HOST = credentials.get('EMAIL_HOST')
+    EMAIL_PORT = credentials.get('EMAIL_PORT')
+    EMAIL_HOST_USER = credentials.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = credentials.get('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True 

@@ -3,9 +3,9 @@ from .form import OrderForm
 from .models import Order
 from cart.models import CartItem
 import datetime
+from django.contrib.auth.decorators import login_required
 
-# Create your views here.
-
+@login_required(login_url = 'login')
 def place_order(request):
     current_user = request.user
 
@@ -24,12 +24,11 @@ def place_order(request):
 
     grand_total = tax_amount + total
 
-    print(request.POST)
     if request.method == 'POST':
         form = OrderForm(request.POST)
          
         if form.is_valid():
-            print("Validated")
+        
             data = Order()
             data.user = current_user
             data.first_name = form.cleaned_data['first_name']
@@ -56,8 +55,21 @@ def place_order(request):
             order_number = current_date + str(data.id)
             data.order_number = order_number
             data.save()
-            return redirect('checkout')
+
+            order = Order.objects.get(user = current_user, is_ordered = False, order_number = order_number)
+            context = {
+                'order' : order,
+                'cart_items' : cart_items,
+                'total' : total,
+                'tax_amount' : tax_amount, 
+                'grand_total' : grand_total,
+            }
+            return render(request, 'order/payment.html', context)
         
     else:
         return redirect('checkout')
+
+@login_required(login_url = 'login')
+def payment(request):
+    return render(request, "order/payment.html")
 
