@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from .form import OrderForm
-from .models import Order
+from .models import Order, Payment, OrderProduct
 from cart.models import CartItem
 import datetime
 from django.contrib.auth.decorators import login_required
+import json
 
 @login_required(login_url = 'login')
 def place_order(request):
@@ -71,5 +72,34 @@ def place_order(request):
 
 @login_required(login_url = 'login')
 def payment(request):
+    body = json.loads(request.body)
+    order = Order.objects.get(user = request.user, is_ordered = False, order_number = body['orderId'])
+    payment = Payment(
+        user = request.user, 
+        payment_id = body['transactionId'],
+        payment_method = body['payment_method'],
+        amount_paid = order.order_total,
+        status = body['status'],
+    )
+
+    payment.save()
+    order.payment = payment
+    is_ordered = True
+    order.save()
+
+    #Move the cart items to Order product table
+    cart_items = CartItem.objects.filter(user = request.user)
+
+    for item in cart_items:
+        order_product = OrderProduct()
+        order_product.order_id = order.id 
+        order_product.payment = payment
+        order_product.user_id = request.user.id 
+        order_product.product_id = item.product_id
+        order_product.quantity = item.quantity
+        order_product.product_price = item.product.price
+        order_product.is_ordered = True
+        order_product.save()
+        
     return render(request, "order/payment.html")
 

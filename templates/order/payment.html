@@ -110,7 +110,28 @@
                 <!-- paypl payement button -->
             <script>
 
-                var amount = {{ grand_total }}
+                function getCookie(name) {
+                    let cookieValue = null;
+                    if (document.cookie && document.cookie !== '') {
+                        const cookies = document.cookie.split(';');
+                        for (let i = 0; i < cookies.length; i++) {
+                            const cookie = cookies[i].trim();
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+
+                var amount = "{{ grand_total }}"
+                var url = "{% url 'payment' %}"
+                const csrftoken = getCookie('csrftoken');
+                var payment_method = "Paypal";
+                var orderId = "{{ order.order_number }}"
+
                 paypal.Buttons({
                     style: {
                         color:'blue',
@@ -141,6 +162,24 @@
                     // const element = document.getElementById('paypal-button-container');
                     // element.innerHTML = '<h3>Thank you for your payment!</h3>';
                     // Or go to another URL:  actions.redirect('thank_you.html');
+                    sendData();
+                    function sendData(){
+                        fetch(url, {
+                            method : "POST",
+                            headers :{
+                                "Content-type" : "application/json",
+                                "X-CSRFToken" : csrftoken,
+                            },
+                            body : JSON.stringify({
+                                orderId : orderId,
+                                transactionId : orderData.id,
+                                payment_method : payment_method,
+                                status : orderData.status,
+                            })
+                        })
+                        //.then((response) => response.json())
+ 
+                    }
                     });
                 }
                 }).render('#paypal-button-container');
