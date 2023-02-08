@@ -8,6 +8,10 @@ from cart.views import _cart_id
 from cart.models import Cart, CartItem
 import requests
 
+
+def _get_current_site(request):
+    return get_current_site(request)
+
 #verification email
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
@@ -16,17 +20,18 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes
 
-def _send_mail(current_site, email_subject, template_to_render, user, to):
-    mail_subject = email_subject
+def _send_mail(current_site, email_subject, template_to_render, user, to, data = None):
+    
     message = render_to_string(template_to_render, {
         'user' : user, 
         'domain' : current_site, 
         'uid' : urlsafe_base64_encode(force_bytes(user.pk)),
         'token' : default_token_generator.make_token(user),
+        'data' : data,
     })
 
     to_mail = to
-    send_mail = EmailMessage(mail_subject, message, to= [to_mail])
+    send_mail = EmailMessage(email_subject, message, to= [to_mail])
     send_mail.send()
 
 
@@ -46,7 +51,7 @@ def register(request):
 
 
             #USER ACTIVATION
-            current_site = get_current_site(request)
+            current_site = _get_current_site(request)
             email_subject = 'Action Required-Please activate your account'
             template = "account/account_activation_mail.html"
             _send_mail(current_site, email_subject, template, user, email)
@@ -111,7 +116,6 @@ def login(request):
             url = request.META.get('HTTP_REFERER')
             try:
                 query = requests.utils.urlparse(url).query
-                print(query)
                 params = dict(x.split('=') for x in query.split('&'))
                 if 'next' in params:
                     next_page = params['next']
@@ -159,7 +163,7 @@ def forgot_password(request):
         user_email = request.POST['email']
         if Account.objects.filter(email = user_email).exists():
             user = Account.objects.get(email__iexact = user_email)
-            current_site = get_current_site(request)
+            current_site = _get_current_site(request)
             email_subject = "Action Required-Reset password"
             template = "account/reset_password_mail.html"
 

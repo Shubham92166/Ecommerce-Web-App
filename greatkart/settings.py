@@ -182,8 +182,8 @@ try:
     EMAIL_HOST_USER = config('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 except:
-    EMAIL_HOST = credentials.get('EMAIL_HOST')
-    EMAIL_PORT = credentials.get('EMAIL_PORT')
-    EMAIL_HOST_USER = credentials.get('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = credentials.get('EMAIL_HOST_PASSWORD')
+    EMAIL_HOST = credentials['EMAIL_HOST']
+    EMAIL_PORT = credentials['EMAIL_PORT']
+    EMAIL_HOST_USER = credentials['EMAIL_HOST_USER']
+    EMAIL_HOST_PASSWORD = credentials['EMAIL_HOST_PASSWORD']
 EMAIL_USE_TLS = True 
