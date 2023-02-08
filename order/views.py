@@ -5,6 +5,8 @@ from cart.models import CartItem
 import datetime
 from django.contrib.auth.decorators import login_required
 import json
+from store.models import Product
+from account.views import _send_mail, _get_current_site
 
 @login_required(login_url = 'login')
 def place_order(request):
@@ -84,7 +86,7 @@ def payment(request):
 
     payment.save()
     order.payment = payment
-    is_ordered = True
+    order.is_ordered = True
     order.save()
 
     #Move the cart items to Order product table
@@ -101,5 +103,27 @@ def payment(request):
         order_product.is_ordered = True
         order_product.save()
         
+        cart_item = CartItem.objects.get(id = item.id)
+        product_variations = cart_item.variations.all()
+        order_product.variations.set(product_variations)
+        order_product.save()
+
+        #Reduce the quantity of the sold products
+        product = Product.objects.get(id = item.product_id)
+        product.stock -= item.quantity
+        product.save()
+
+    #Clear the cart after placing the order
+    CartItem.objects.filter(user = request.user).delete()
+
+    #Send order complettion email
+    current_site = _get_current_site(request)
+    email_subject = "Thank you for your order!"
+    template = "order/order_received_email.html"
+    user = request.user
+    user_email = user.email
+    data = order
+    _send_mail(current_site, email_subject, template, user, user_email, data)
+
     return render(request, "order/payment.html")
 
