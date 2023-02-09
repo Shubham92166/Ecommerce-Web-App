@@ -48,11 +48,11 @@ class Order(models.Model):
         return self.first_name
     
 class OrderProduct(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    payment = models.ForeignKey(Payment, on_delete=models.CASCADE)
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    variations = models.ManyToManyField(Variation, blank=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order")
+    payment = models.ForeignKey(Payment, on_delete=models.CASCADE, related_name="payment")
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="user")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="product")
+    variations = models.ManyToManyField(Variation, blank=True, related_name="variations")
     quantity = models.IntegerField()
     product_price = models.FloatField()
     is_ordered = models.BooleanField(default=False)
