@@ -57,6 +57,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -187,3 +188,7 @@ except:
     EMAIL_HOST_USER = credentials['EMAIL_HOST_USER']
     EMAIL_HOST_PASSWORD = credentials['EMAIL_HOST_PASSWORD']
 EMAIL_USE_TLS = True 
+
+SESSION_EXPIRE_SECONDS = 5*60
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+SESSION_TIMEOUT_REDIRECT = 'login'

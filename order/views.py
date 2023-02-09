@@ -7,13 +7,14 @@ from django.contrib.auth.decorators import login_required
 import json
 from store.models import Product
 from account.views import _send_mail, _get_current_site
+from django.http import JsonResponse
 
 @login_required(login_url = 'login')
 def place_order(request):
     current_user = request.user
 
     grand_total = 0
-    tax = 0
+    tax_amount = 0
     total = 0
     quantity = 0
 
@@ -46,7 +47,7 @@ def place_order(request):
             data.order_note = form.cleaned_data['order_note']
             data.order_total = grand_total
             data.ip = request.META.get('REMOTE_ADDR')
-            data.tax = tax
+            data.tax = tax_amount
             data.save()
 
             yr = int(datetime.date.today().strftime('%Y'))
@@ -122,8 +123,57 @@ def payment(request):
     template = "order/order_received_email.html"
     user = request.user
     user_email = user.email
-    data = order
+    paymentId = body['transactionId'],
+    order_product.payment.payment_id
+    order_number = body['orderId']
+
+    order = Order.objects.get(order_number = order_number, is_ordered = True)
+    ordered_products = OrderProduct.objects.filter(order_id = order.id)
+
+    total = order.order_total
+    tax_amount = order.tax
+    sub_total = total - tax_amount
+
+    
+    data = {
+        'order' : order,
+        'order_number' : order.order_number,
+        'ordered_products' : ordered_products,
+        'sub_total' : sub_total,
+    }
     _send_mail(current_site, email_subject, template, user, user_email, data)
 
-    return render(request, "order/payment.html")
+    data = {
+        'order_number' : order.order_number,
+        'transactionId' : payment.payment_id,
+    }
+
+    return JsonResponse(data)
+
+def order_complete(request):
+    order_number = request.GET.get('order_number')
+    paymentId = request.GET.get('payment_id')
+    try:
+        order = Order.objects.get(order_number = order_number, is_ordered = True)
+        ordered_products = OrderProduct.objects.filter(order_id = order.id)
+
+        total = order.order_total
+        tax_amount = order.tax
+        sub_total = total - tax_amount
+
+        payment = Payment.objects.get(payment_id = paymentId)
+
+        context = {
+            'order' : order,
+            'ordered_products' : ordered_products,
+            'order_number' : order.order_number,
+            'paymentId' : payment.payment_id,
+            'payment' : payment,
+            'sub_total' : sub_total,
+        }
+        return render(request, "order/order_complete.html", context)
+    except (Payment.DoesNotExist, Order.DoesNotExist):
+        return redirect('home')
+    
+
 

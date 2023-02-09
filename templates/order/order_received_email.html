@@ -1,9 +1,53 @@
 {% autoescape off %}
 
-Hi {{ user.first_name }},
+Hi {{ user.first_name }}, <br>
 
-The order was successful!
+<br> order was successful! <br>
 
-Order No. : {{ data.order_number }}
-
+<br> Order No. : {{ data.order_number }} <br> <br>
+      <div class="invoice-items">
+        <div class="table-responsive" style="overflow: hidden; outline: none;" tabindex="0">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="per70 text-center">Products</th>
+                                            <th class="per5 text-center">Qty</th>
+                                            <th class="per25 text-center">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for product in data.ordered_products %}
+                                            <tr>
+                                                <td>{{ product.product.product_name }}
+                                                    <p class="text-muted small">
+                                                        {% if product.variations.all %}
+                                                            {% for product in product.variations.all %}
+                                                                {{ product.variation_category | capfirst }} : {{ product.variation_value | capfirst }} <br> 
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </p>
+                                                </td>
+                                                <td class="text-center">  {{ product.quantity }}</td>
+                                                <td class="text-center"> ${{ product.product.price }} USD</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="2" class="text-right">Sub Total:</th>
+                                            <th class="text-center">${{ data.sub_total }} USD</th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2" class="text-right">Tax:</th>
+                                            <th class="text-center">${{ data.order.tax }} USD</th>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <th colspan="2" class="text-right">Grand Total:</th>
+                                            <th class="text-center">${{ data.order.order_total }} USD</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
 {% endautoescape %}

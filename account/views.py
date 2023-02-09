@@ -32,6 +32,7 @@ def _send_mail(current_site, email_subject, template_to_render, user, to, data =
 
     to_mail = to
     send_mail = EmailMessage(email_subject, message, to= [to_mail])
+    send_mail.content_subtype = "html"
     send_mail.send()
 
 
