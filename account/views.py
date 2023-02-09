@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from cart.views import _cart_id
 from cart.models import Cart, CartItem
 import requests
-from order.models import Order
+from order.models import Order, OrderProduct
 
 
 def _get_current_site(request):
@@ -226,6 +226,34 @@ def my_orders(request):
     }
     return render(request, 'account/my_orders.html', context)
 
+
 @login_required(login_url='login')
 def edit_profile(request):
-    return render(request, 'account/edit-profile.html') 
+    return render(request, 'account/edit-profile.html')
+
+
+@login_required(login_url='login')
+def change_password(request):
+    return render(request, 'account/change-password.html')
+ 
+def order_detail(request, order_id):
+    
+    try:
+        order = Order.objects.get(order_number = order_id, is_ordered = True)
+        ordered_products = OrderProduct.objects.filter(order__order_number = order_id)
+
+        total = order.order_total
+        tax_amount = order.tax
+        sub_total = total - tax_amount
+
+
+        context = {
+            'order' : order,
+            'ordered_products' : ordered_products,
+            'order_number' : order.order_number,
+            'sub_total' : sub_total,
+        }
+        return render(request, 'account/order-detail.html', context)
+    except:
+        pass
+    return render(request, 'account/order-detail.html')
