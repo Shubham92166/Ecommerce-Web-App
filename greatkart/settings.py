@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'store',
     'cart',
     'order',
+    'admin_honeypot',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
