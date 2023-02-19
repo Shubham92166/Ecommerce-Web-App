@@ -1,4 +1,7 @@
+#Django import
 from django.contrib import admin
+
+#local import
 from .models import Order, OrderProduct, Payment
 # Register your models here.
 

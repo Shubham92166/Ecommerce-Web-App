@@ -1,24 +1,29 @@
+#Django imports 
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages, auth
+from django.contrib.auth.decorators import login_required
+
+#local imports
 from .form import RegistrationForm, UserForm, UserProfileForm
 from .models import Account, UserProfile
-from django.contrib import messages
-from django.contrib import auth
-from django.contrib.auth.decorators import login_required
-from cart.views import _cart_id
-from cart.models import Cart, CartItem
-import requests
 from order.models import Order, OrderProduct
+from cart.models import Cart, CartItem
+from cart.views import _cart_id
 
-def _get_current_site(request):
-    return get_current_site(request)
-
-#verification email
+#Django imports for verification email
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes
+
+#external library import
+import requests
+
+"""return the current site"""
+def _get_current_site(request):
+    return get_current_site(request)
 
 def _send_mail(current_site, email_subject, template_to_render, user, to, data = None):
     
