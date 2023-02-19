@@ -42,9 +42,12 @@ def product_detail(request, category_slug = None, product_slug = None):
     except Exception as e:
         raise e
     
-    try:
-        product_purchased_before = OrderProduct.objects.filter(user = request.user, product__id = single_product.id).exists()
-    except OrderProduct.DoesNotExist:
+    if request.user.is_authenticated:
+        try:
+            product_purchased_before = OrderProduct.objects.filter(user = request.user, product__id = single_product.id).exists()
+        except OrderProduct.DoesNotExist:
+            product_purchased_before = False
+    else:
         product_purchased_before = False
     
     #Get all reviews for the given product id
