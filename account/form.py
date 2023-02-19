@@ -1,4 +1,7 @@
+#Django import
 from django import forms
+
+#local import
 from .models import Account, UserProfile
 
 class RegistrationForm(forms.ModelForm):

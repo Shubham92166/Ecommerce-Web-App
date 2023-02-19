@@ -1,13 +1,19 @@
+#Django imports
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+
+#local imports
 from .form import OrderForm
 from .models import Order, Payment, OrderProduct
-from cart.models import CartItem
-import datetime
-from django.contrib.auth.decorators import login_required
-import json
 from store.models import Product
+from cart.models import CartItem
 from account.views import _send_mail, _get_current_site
-from django.http import JsonResponse
+
+#external libraries import
+import datetime
+import json
+
 
 @login_required(login_url = 'login')
 def place_order(request):

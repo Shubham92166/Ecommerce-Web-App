@@ -1,8 +1,12 @@
+#Django imports
 from django.db import models
-from category.models import Category
 from django.urls import reverse
-from account.models import Account
 from django.db.models import Avg, Count
+
+#local imports
+from category.models import Category
+from account.models import Account
+
 
 class Product(models.Model):
     product_name = models.CharField(max_length=100, unique= True)

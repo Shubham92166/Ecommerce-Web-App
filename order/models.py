@@ -1,4 +1,7 @@
+#Django imports
 from django.db import models
+
+#local imports
 from account.models import Account
 from cart.models import Product, Variation
 

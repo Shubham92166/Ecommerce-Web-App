@@ -1,13 +1,16 @@
+#Django imports 
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.contrib import messages
+
+#local imports
 from .models import Product, ReviewRating
 from category.models import Category
 from cart.models import CartItem
 from cart.views import _cart_id
-from django.core.paginator import Paginator
-from django.db.models import Q
-from .forms import ReviewForm
-from django.contrib import messages
 from order.models import OrderProduct
+from .forms import ReviewForm
 
 def store(request, category_slug = None):
     categories = None
@@ -75,7 +78,7 @@ def search(request):
 
     return render(request, 'store/store.html', context)
 
-def  add_review(request, product_id):
+def add_review(request, product_id):
     url = request.META.get('HTTP_REFERER')
     if request.method == 'POST':
         try:

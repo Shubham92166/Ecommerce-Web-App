@@ -1,4 +1,7 @@
+#Django imports
 from django import forms
+
+#local imports
 from .models import ReviewRating
 
 class ReviewForm(forms.ModelForm):
